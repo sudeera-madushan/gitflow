@@ -1,0 +1,130 @@
+---
+alwaysApply: true
+---
+
+# Commit Message Guidelines
+
+When generating commit messages using Cursor's generate option, ALWAYS follow these rules:
+
+## Commit Message Format
+
+Each commit message MUST follow this structure:
+
+```
+<type>(<scope>): <jira issue key> - <short description>
+
+<optional longer description>
+```
+
+## Required Components
+
+1. **Type**: One of the commit types listed below (required)
+2. **Scope**: The module or feature being modified (optional but recommended)
+3. **JIRA Issue Key**: Always include an issue key (e.g., SOF-1202, JIRA-123, CUS-45) (required)
+4. **Short Description**: Brief description in imperative mood (required, max 50 characters)
+5. **Longer Description**: Optional detailed explanation
+
+## Commit Types
+
+Use ONLY these commit types:
+
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, missing semi-colons, etc.)
+- `refactor`: Code refactoring (no new features, no bug fixes)
+- `perf`: Performance improvements
+- `test`: Adding or modifying tests
+- `chore`: Maintenance tasks (e.g., build process, dependencies)
+- `revert`: Revert a previous commit
+
+## Common Scopes
+
+Use appropriate scopes such as:
+
+- `auth` (authentication)
+- `dashboard`
+- `api`
+- `checkout`
+- `database`
+- `leads`
+- `contacts`
+- `components`
+- `routing`
+- `hooks`
+- `utils`
+- `styles`
+- `config`
+
+## Commit Message Rules
+
+1. **Imperative Mood**: Use imperative mood (e.g., "fix bug" not "fixed bug")
+2. **Subject Line**: Keep concise (50 characters max)
+3. **Capitalization**: Capitalize the first letter of the commit message
+4. **No Period**: Do not end the subject line with a period
+5. **JIRA Key Required**: ALWAYS include a JIRA issue key (e.g., SOF-1202, JIRA-123)
+
+## Examples
+
+### Good Examples:
+
+```
+feat(auth): SOF-1202 - add OTP authentication for login
+
+Implemented OTP-based authentication for secure login. This includes sending OTP via email and validating input.
+```
+
+```
+fix(api): SOF-1202 - resolve CORS issue for external clients
+```
+
+```
+refactor(components): SOF-1234 - extract common button logic into reusable hook
+```
+
+```
+docs(readme): SOF-5678 - update installation instructions
+```
+
+### Bad Examples (DO NOT USE):
+
+```
+Fixed bug in authentication
+```
+
+(Missing type, scope, JIRA key, and wrong mood)
+
+```
+feat: add new feature
+```
+
+(Missing scope and JIRA key)
+
+```
+feat(auth): SOF-1202 - Added OTP authentication
+```
+
+(Wrong mood - "Added" instead of "add")
+
+## Branch Naming Convention
+
+When creating branches, follow this structure:
+
+```
+<type>/<short-description>
+```
+
+Examples:
+
+- `feat/user-profile-page`
+- `fix/payment-bug`
+- `docs/api-usage`
+
+## Important Notes
+
+- **ALWAYS** include a JIRA issue key in every commit message
+- Use the imperative mood for all commit messages
+- Keep the subject line under 50 characters
+- Capitalize the first letter
+- Do not end with a period
+- Include scope when it adds clarity about what part of the codebase changed
