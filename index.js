@@ -1,9 +1,11 @@
 // Main entry point - Server setup
 const http = require("http");
 const UserRoutes = require("./routes/userRoutes");
+const ItemRoutes = require("./routes/itemRoutes");
 
 const PORT = process.env.PORT || 3000;
 const userRoutes = new UserRoutes();
+const itemRoutes = new ItemRoutes();
 
 const server = http.createServer((req, res) => {
   // Enable CORS
@@ -21,11 +23,29 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Route requests
-  userRoutes.handleRequest(req, res);
+  // Route requests based on URL path
+  const urlParts = req.url.split("/").filter((part) => part);
+
+  if (urlParts.length >= 2 && urlParts[0] === "api") {
+    if (urlParts[1] === "users") {
+      userRoutes.handleRequest(req, res);
+    } else if (urlParts[1] === "items") {
+      itemRoutes.handleRequest(req, res);
+    } else {
+      // 404 Not Found
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Route not found" }));
+    }
+  } else {
+    // 404 Not Found
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Route not found" }));
+  }
 });
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`API endpoints available at http://localhost:${PORT}/api/users`);
+  console.log(`API endpoints available at:`);
+  console.log(`  - http://localhost:${PORT}/api/users`);
+  console.log(`  - http://localhost:${PORT}/api/items`);
 });
