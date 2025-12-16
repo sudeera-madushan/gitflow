@@ -2,10 +2,12 @@
 const http = require("http");
 const UserRoutes = require("./routes/userRoutes");
 const ItemRoutes = require("./routes/itemRoutes");
+const OrderRoutes = require("./routes/orderRoutes");
 
 const PORT = process.env.PORT || 3000;
 const userRoutes = new UserRoutes();
 const itemRoutes = new ItemRoutes();
+const orderRoutes = new OrderRoutes();
 
 const server = http.createServer((req, res) => {
   // Enable CORS
@@ -31,6 +33,8 @@ const server = http.createServer((req, res) => {
       userRoutes.handleRequest(req, res);
     } else if (urlParts[1] === "items") {
       itemRoutes.handleRequest(req, res);
+    } else if (urlParts[1] === "orders") {
+      orderRoutes.handleRequest(req, res);
     } else {
       // 404 Not Found
       res.writeHead(404, { "Content-Type": "application/json" });
@@ -48,4 +52,5 @@ server.listen(PORT, () => {
   console.log(`API endpoints available at:`);
   console.log(`  - http://localhost:${PORT}/api/users`);
   console.log(`  - http://localhost:${PORT}/api/items`);
+  console.log(`  - http://localhost:${PORT}/api/orders`);
 });
