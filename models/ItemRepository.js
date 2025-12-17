@@ -50,6 +50,23 @@ class ItemRepository {
     return null;
   }
 
+  // Bulk delete items
+  deleteMany(ids) {
+    const deletedItems = [];
+    const notFoundIds = [];
+
+    ids.forEach((id) => {
+      const item = this.delete(id);
+      if (item) {
+        deletedItems.push(item);
+      } else {
+        notFoundIds.push(id);
+      }
+    });
+
+    return { deletedItems, notFoundIds };
+  }
+
   // Find items by category
   findByCategory(category) {
     return this.items.filter((item) => item.category === category);
@@ -58,9 +75,10 @@ class ItemRepository {
   // Find items by name (case-insensitive partial match)
   findByName(name) {
     const searchName = name.toLowerCase();
-    return this.items.filter((item) => item.name.toLowerCase().includes(searchName));
+    return this.items.filter((item) =>
+      item.name.toLowerCase().includes(searchName)
+    );
   }
 }
 
 module.exports = ItemRepository;
-
