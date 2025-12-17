@@ -43,11 +43,23 @@ class ItemController {
       }
 
       if (price !== undefined && (isNaN(price) || price < 0)) {
-        return this.sendError(res, 400, "Price must be a valid positive number");
+        return this.sendError(
+          res,
+          400,
+          "Price must be a valid positive number"
+        );
       }
 
-      const item = this.itemRepository.create({ name, description, price, category });
-      this.sendResponse(res, 201, { item, message: "Item created successfully" });
+      const item = this.itemRepository.create({
+        name,
+        description,
+        price,
+        category,
+      });
+      this.sendResponse(res, 201, {
+        item,
+        message: "Item created successfully",
+      });
     } catch (error) {
       this.sendError(res, 500, "Failed to create item", error);
     }
@@ -66,11 +78,23 @@ class ItemController {
 
       // Validate price if provided
       if (price !== undefined && (isNaN(price) || price < 0)) {
-        return this.sendError(res, 400, "Price must be a valid positive number");
+        return this.sendError(
+          res,
+          400,
+          "Price must be a valid positive number"
+        );
       }
 
-      const updatedItem = this.itemRepository.update(id, { name, description, price, category });
-      this.sendResponse(res, 200, { item: updatedItem, message: "Item updated successfully" });
+      const updatedItem = this.itemRepository.update(id, {
+        name,
+        description,
+        price,
+        category,
+      });
+      this.sendResponse(res, 200, {
+        item: updatedItem,
+        message: "Item updated successfully",
+      });
     } catch (error) {
       this.sendError(res, 500, "Failed to update item", error);
     }
@@ -93,6 +117,56 @@ class ItemController {
     }
   }
 
+  // DELETE /api/items/bulk - Bulk delete items
+  bulkDeleteItems(req, res) {
+    try {
+      const { ids } = req.body;
+
+      // Validation
+      if (!ids || !Array.isArray(ids)) {
+        return this.sendError(res, 400, "ids must be an array");
+      }
+
+      if (ids.length === 0) {
+        return this.sendError(res, 400, "ids array cannot be empty");
+      }
+
+      // Validate all ids are numbers or numeric strings
+      const invalidIds = ids.filter((id) => isNaN(parseInt(id)));
+      if (invalidIds.length > 0) {
+        return this.sendError(
+          res,
+          400,
+          `Invalid ids: ${invalidIds.join(", ")}`
+        );
+      }
+
+      const { deletedItems, notFoundIds } = this.itemRepository.deleteMany(ids);
+
+      if (deletedItems.length === 0) {
+        return this.sendError(res, 404, "No items found to delete");
+      }
+
+      const response = {
+        message: `Successfully deleted ${deletedItems.length} item(s)`,
+        deletedCount: deletedItems.length,
+        deletedItems: deletedItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+        })),
+      };
+
+      if (notFoundIds.length > 0) {
+        response.warning = `${notFoundIds.length} item(s) not found`;
+        response.notFoundIds = notFoundIds;
+      }
+
+      this.sendResponse(res, 200, response);
+    } catch (error) {
+      this.sendError(res, 500, "Failed to delete items", error);
+    }
+  }
+
   // Helper method to send success response
   sendResponse(res, statusCode, data) {
     res.writeHead(statusCode, { "Content-Type": "application/json" });
@@ -111,4 +185,3 @@ class ItemController {
 }
 
 module.exports = ItemController;
-
